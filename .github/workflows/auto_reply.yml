@@ -1,28 +1,32 @@
-name: Auto Email Reply Bot
+name: Auto Email Reply
 
 on:
   schedule:
-    - cron: "*/1 * * * *"   # runs every 1 minute
-  workflow_dispatch:
+    # Runs every 5 minutes (you can adjust)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # allows manual trigger
 
 jobs:
-  run-bot:
+  email-reply:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt || true
+        run: |
+          python -m pip install --upgrade pip
+          pip install secure-smtplib email
 
-      - name: Run auto-reply engine
+      - name: Run GitHub Auto Reply
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python3 github_auto_reply.py
+        run: |
+          python github_auto_reply.py
