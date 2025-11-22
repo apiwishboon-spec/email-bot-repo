@@ -1,12 +1,12 @@
-name: Auto Email Reply
+name: Auto Email Reply Bot
 
 on:
   schedule:
-    - cron: "* * * * *"   # runs every 1 minute
-  workflow_dispatch:       # allows manual run
+    - cron: "*/1 * * * *"   # runs every 1 minute
+  workflow_dispatch:
 
 jobs:
-  run-script:
+  run-bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,13 +16,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install --upgrade pip
+        run: pip install -r requirements.txt || true
 
-      - name: Run auto-reply script
+      - name: Run auto-reply engine
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python auto_reply.py
+        run: python3 github_auto_reply.py
